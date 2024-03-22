@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Data formats for proportions</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+<style type="text/css">
+
+div.csl-bib-body { }
+div.csl-entry {
+clear: both;
+margin-bottom: 0em;
+}
+.hanging div.csl-entry {
+margin-left:2em;
+text-indent:-2em;
+}
+div.csl-left-margin {
+min-width:2em;
+float:left;
+}
+div.csl-right-inline {
+margin-left:2em;
+padding-left:1em;
+}
+div.csl-indent {
+margin-left: 2em;
+}
+</style>
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Data formats for proportions</h1>
+
+
+
+<div id="data-formats-for-proportions" class="section level1">
+<h1>Data formats for proportions</h1>
+<p>proportions are actually not raw data: they are the proportion of one
+response (typically called a <code>success</code>) over all the
+responses (the other responses being called collectively a
+<code>failure</code>). As such, a proportion is a <em>summary
+statistic</em>, a bit like the mean is a summary statistic of continuous
+data.</p>
+<p>Very often, the <code>success</code> are coded using the digit
+<code>1</code> and the <code>failure</code>, with the digit
+<code>0</code>. When this is the case, computing the mean is actually
+the same as computing the proportion of successes. However, it is a
+conceptual mistake to think of proportions as means, because they must
+the processed completely differently from averages. For example,
+standard error and confidence intervals for proportions are obtained
+using very different procedures than standard error and confidence
+intervals for the mean.</p>
+<p>In this vignette, we review various ways that data can be coded in a
+data frame. In a nutshell, there are three ways to represent success or
+failures, Wide, Long, and Compiled. The first two shows raw scores
+whereas the last shows a summary of the data.</p>
+<p>Before we begin, we load the package <code>ANOPA</code> (if is not
+present on your computer, first upload it to your computer from CRAN or
+from the source repository
+<code>devtools::install_github(&quot;dcousin3/ANOPA&quot;)</code>):</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(ANOPA)   </span></code></pre></div>
+<div id="first-format-wide-data-format" class="section level2">
+<h2>First format: Wide data format</h2>
+<p>In this format, there is one line per <em>subject</em> and one column
+for each measurements. The columns contain only 1s
+(<code>success</code>) or 0s (`failure).</p>
+<p>If the particpant was measured multiple times, there is one (or some)
+within-subject factor(s) resulting in multiple columns of measurements.
+In between-group design, there is only a single column of scores.</p>
+<p>As an example, consider the following data for a between-subject
+factor design with two factors: Class (2 levels) and Difficulty (3
+levels) for 6 groups. There is an identical number of participants in
+each, 12, for a total of 72 participants.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>dataWide1</span></code></pre></div>
+<pre><code>##    Class Difficulty success
+## 1  First       Easy       1
+## 2  First       Easy       1
+## 3  First       Easy       1
+## 4  First       Easy       1
+## 5  First       Easy       1
+## 6  First       Easy       1
+## 7  First       Easy       1
+## 8  First       Easy       1
+## 9  First       Easy       1
+## 10 First       Easy       1
+## 11 First       Easy       1
+## 12 First       Easy       0
+## 13 First   Moderate       1
+## 14 First   Moderate       1
+## 15 First   Moderate       1
+## 16 First   Moderate       1
+## 17 First   Moderate       1
+## 18 First   Moderate       1
+## 19 First   Moderate       1
+## 20 First   Moderate       1
+## 21 First   Moderate       1
+## 22 First   Moderate       0
+## 23 First   Moderate       0
+## 24 First   Moderate       0
+## 25 First  Difficult       1
+## 26 First  Difficult       1
+## 27 First  Difficult       1
+## 28 First  Difficult       1
+## 29 First  Difficult       1
+## 30 First  Difficult       1
+## 31 First  Difficult       0
+## 32 First  Difficult       0
+## 33 First  Difficult       0
+## 34 First  Difficult       0
+## 35 First  Difficult       0
+## 36 First  Difficult       0
+## 37  Last       Easy       1
+## 38  Last       Easy       1
+## 39  Last       Easy       1
+## 40  Last       Easy       1
+## 41  Last       Easy       1
+## 42  Last       Easy       1
+## 43  Last       Easy       1
+## 44  Last       Easy       1
+## 45  Last       Easy       1
+## 46  Last       Easy       1
+## 47  Last       Easy       0
+## 48  Last       Easy       0
+## 49  Last   Moderate       1
+## 50  Last   Moderate       1
+## 51  Last   Moderate       1
+## 52  Last   Moderate       1
+## 53  Last   Moderate       1
+## 54  Last   Moderate       1
+## 55  Last   Moderate       1
+## 56  Last   Moderate       1
+## 57  Last   Moderate       0
+## 58  Last   Moderate       0
+## 59  Last   Moderate       0
+## 60  Last   Moderate       0
+## 61  Last  Difficult       1
+## 62  Last  Difficult       1
+## 63  Last  Difficult       1
+## 64  Last  Difficult       0
+## 65  Last  Difficult       0
+## 66  Last  Difficult       0
+## 67  Last  Difficult       0
+## 68  Last  Difficult       0
+## 69  Last  Difficult       0
+## 70  Last  Difficult       0
+## 71  Last  Difficult       0
+## 72  Last  Difficult       0</code></pre>
+<p>When the data are in a wide format, the formula in
+<code>anopa()</code> must provide the columns where the success/failure
+are stored, and the conditions after the usual ~, as in</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>w1 <span class="ot">&lt;-</span> <span class="fu">anopa</span>( success <span class="sc">~</span> Class <span class="sc">*</span> Difficulty, dataWide1)</span></code></pre></div>
+<p>(how dataWide1 was obtained is shown below in the Section
+<em>Converting between formats</em> below.)</p>
+<p>As another example, consider the following example obtained in a
+mixed, within- and between- subject design. It has a factor
+<code>Status</code> with 8, 9 and 7 participants per group respectively.
+It also has four repeated measures, <code>bpre</code>,
+<code>bpost</code>, <code>b1week</code> and <code>b5week</code> which
+represent four different Moments of measurements. The data frame is</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>dataWide2</span></code></pre></div>
+<pre><code>##      Status bpre bpost b1week b5week
+## 1    Broken    1     1      1      0
+## 2    Broken    1     1      0      0
+## 3    Broken    0     0      1      1
+## 4    Broken    1     1      1      1
+## 5    Broken    0     0      1      1
+## 6    Broken    1     0      1      1
+## 7    Broken    1     1      0      1
+## 8    Broken    0     1      1      0
+## 9  Repaired    1     1      0      0
+## 10 Repaired    0     1      0      1
+## 11 Repaired    1     1      0      0
+## 12 Repaired    0     0      1      0
+## 13 Repaired    0     0      0      0
+## 14 Repaired    1     0      0      0
+## 15 Repaired    0     0      0      0
+## 16 Repaired    0     0      0      1
+## 17 Repaired    0     0      1      0
+## 18      New    0     0      0      1
+## 19      New    0     0      1      0
+## 20      New    0     0      0      0
+## 21      New    0     0      1      0
+## 22      New    0     0      0      0
+## 23      New    0     1      0      0
+## 24      New    0     0      1      0
+## 25      New    1     1      0      0
+## 26      New    0     0      0      1
+## 27      New    1     1      1      0</code></pre>
+<p>The formula for analyzing these data in this format is</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>w2 <span class="ot">&lt;-</span> <span class="fu">anopa</span>( <span class="fu">cbind</span>(bpre, bpost, b1week, b5week) <span class="sc">~</span> Status, dataWide2, <span class="at">WSFactors =</span> <span class="st">&quot;Moment(4)&quot;</span> )</span></code></pre></div>
+<p>It is necessary to (a) group all the measurement columns using
+<code>cbind()</code>; (b) indicate the within-subject factor(s) using
+the argument <code>WSFactors</code> along with the number of levels each
+in a string.</p>
+</div>
+<div id="second-format-long-data-format" class="section level2">
+<h2>Second format: Long data format</h2>
+<p>This format may be prefered for linear modelers (but it may rapidly
+becomes <em>very</em> long!). There is always at least these columns:
+One Id column, one column to indicate a within-subject level, and one
+column to indicate the observed score. On the other hand, this format
+has fewer columns in repeated measure designs.</p>
+<p>This example shows the first 6 lines of the 2-factor between design
+data above, stored in the long format.</p>
+<pre><code>##   Id Class Difficulty Variable Value
+## 1  1 First       Easy  success     1
+## 2  2 First       Easy  success     1
+## 3  3 First       Easy  success     1
+## 4  4 First       Easy  success     1
+## 5  5 First       Easy  success     1
+## 6  6 First       Easy  success     1</code></pre>
+<p>To analyse such data format within <code>anopa()</code>, use</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a>w1Long <span class="ot">&lt;-</span> <span class="fu">anopa</span>( Value <span class="sc">~</span> Class <span class="sc">*</span> Difficulty <span class="sc">*</span> Variable  <span class="sc">|</span> Id, dataLong1 )</span></code></pre></div>
+<p>The vertical line symbol indicates that the observations are nested
+within <code>Id</code> (i.e., all the lines with the same Id are
+actually the same subject).</p>
+<p>With the mixed design described above, the data begin as:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="fu">head</span>(dataLong2)</span></code></pre></div>
+<pre><code>##   Id Status Variable Value
+## 1  1 Broken     bpre     1
+## 2  1 Broken    bpost     1
+## 3  1 Broken   b1week     1
+## 4  1 Broken   b5week     0
+## 5  2 Broken     bpre     1
+## 6  2 Broken    bpost     1</code></pre>
+<p>and are analyzed with the formula:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a>w2Long <span class="ot">&lt;-</span> <span class="fu">anopa</span>( Value <span class="sc">~</span> Status <span class="sc">*</span> Variable  <span class="sc">|</span> Id, dataLong2, <span class="at">WSFactors=</span><span class="st">&quot;Moment(4)&quot;</span> )</span></code></pre></div>
+</div>
+<div id="third-format-compiled-data-format" class="section level2">
+<h2>Third format: Compiled data format</h2>
+<p>This format is compiled, in the sense that the 0s and 1s have been
+replaced by a single count of success for each cell of the design.
+Hence, we no longer have access to the raw data. This format however has
+the advantage of being very compact, requiring few lines. Here is the
+data for the 2 between-subject factors example</p>
+<pre><code>##   Class Difficulty success Count
+## 1 First  Difficult       6    12
+## 2 First       Easy      11    12
+## 3 First   Moderate       9    12
+## 4  Last  Difficult       3    12
+## 5  Last       Easy      10    12
+## 6  Last   Moderate       8    12</code></pre>
+<p>To use a compiled format in <code>anopa()</code>, use</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a>w1Compiled <span class="ot">&lt;-</span> <span class="fu">anopa</span>( {success; Count} <span class="sc">~</span> Class <span class="sc">*</span> Difficulty, dataCompiled1 )</span></code></pre></div>
+<p>where <code>succes</code> identifies in which column the total number
+of successes are stored. The column Count indicates the total number of
+observations in that cell. The notation {s;n} is read
+<code>s over n</code> (note the curly braces and semicolon).</p>
+<p>For the mixed design presented earlier, the data looks like:</p>
+<pre><code>##     Status bpre bpost b1week b5week Count      uAlpha
+## 1   Broken    5     5      6      5     8 -0.15204678
+## 2      New    2     3      4      2    10 -0.03463203
+## 3 Repaired    3     3      2      2     9 -0.10416667</code></pre>
+<p>where there are columns for the number of success for each repeated
+measures. A new columns appear <code>uAlpha</code>. This column (called
+<em>unitary alpha</em>) is a measure of correlation (between -1 and +1).
+In this ficticious example, the correlations are near zero (negative
+actually) by chance as the data were generated randomly.</p>
+<p>It is not possible to run an ANOPA analysis at this time on compiled
+data when there are repeated measures (but this may change in a future
+version).</p>
+</div>
+<div id="converting-between-formats" class="section level2">
+<h2>Converting between formats</h2>
+<p>Once entered in an <code>anopa()</code> structure, it is possible to
+convert to any format using <code>toWide()</code>,
+<code>toCompiled()</code> and <code>toLong()</code>. For example:</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a><span class="fu">toCompiled</span>(w1)</span></code></pre></div>
+<pre><code>##   Class Difficulty success Count
+## 1 First  Difficult       6    12
+## 2 First       Easy      11    12
+## 3 First   Moderate       9    12
+## 4  Last  Difficult       3    12
+## 5  Last       Easy      10    12
+## 6  Last   Moderate       8    12</code></pre>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a><span class="fu">toCompiled</span>(w2)</span></code></pre></div>
+<pre><code>##     Status bpre bpost b1week b5week Count      uAlpha
+## 1   Broken    5     5      6      5     8 -0.15204678
+## 2      New    2     3      4      2    10 -0.03463203
+## 3 Repaired    3     3      2      2     9 -0.10416667</code></pre>
+<p>The compiled format is probably the most compact format, but the wide
+format is the most explicite format (as we see all the subjects and
+their scores on a single line, one subject per line).</p>
+</div>
+<div id="getting-the-example-data-frame" class="section level2">
+<h2>Getting the example data frame</h2>
+<p>Above, we used two examples. They are available in this package under
+the names <code>twoWayExample</code> and <code>minimalMxExample</code>.
+The first is available in compiled form, the second in wide form.</p>
+<p>We converted these data set in other formats using:</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" tabindex="-1"></a>w1 <span class="ot">&lt;-</span> <span class="fu">anopa</span>( {success;total} <span class="sc">~</span> Class <span class="sc">*</span> Difficulty, twoWayExample)</span>
+<span id="cb20-2"><a href="#cb20-2" tabindex="-1"></a>dataWide1     <span class="ot">&lt;-</span> <span class="fu">toWide</span>(w1)</span>
+<span id="cb20-3"><a href="#cb20-3" tabindex="-1"></a>dataCompiled1 <span class="ot">&lt;-</span><span class="fu">toCompiled</span>(w1)</span>
+<span id="cb20-4"><a href="#cb20-4" tabindex="-1"></a>dataLong1     <span class="ot">&lt;-</span> <span class="fu">toLong</span>(w1)</span>
+<span id="cb20-5"><a href="#cb20-5" tabindex="-1"></a></span>
+<span id="cb20-6"><a href="#cb20-6" tabindex="-1"></a>w2 <span class="ot">&lt;-</span> <span class="fu">anopa</span>( <span class="fu">cbind</span>(bpre, bpost, b1week, b5week) <span class="sc">~</span> Status, minimalMxExample, <span class="at">WSFactors =</span> <span class="st">&quot;Moment(4)&quot;</span>)</span></code></pre></div>
+<pre><code>## ANOPA::fyi: Here is how the within-subject variables are understood:</code></pre>
+<pre><code>##  Moment Variable
+##       1     bpre
+##       2    bpost
+##       3   b1week
+##       4   b5week</code></pre>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" tabindex="-1"></a>dataWide2     <span class="ot">&lt;-</span> <span class="fu">toWide</span>(w2)</span>
+<span id="cb23-2"><a href="#cb23-2" tabindex="-1"></a>dataCompiled2 <span class="ot">&lt;-</span><span class="fu">toCompiled</span>(w2)</span>
+<span id="cb23-3"><a href="#cb23-3" tabindex="-1"></a>dataLong2     <span class="ot">&lt;-</span> <span class="fu">toLong</span>(w2)</span></code></pre></div>
+</div>
+<div id="multiple-repeated-measure-factors" class="section level2">
+<h2>Multiple repeated-measure factors</h2>
+<p>One limitation is with regards to repeated measures: It is not
+possible to guess the name of the within-subject factors from the names
+of the columns. This is why, as soon as there are more than one
+measurement, the argument <code>WSFactors</code> must be added.</p>
+<p>Suppose a two-way within-subject design with 2 x 3 levels. The data
+set <code>twoWayWithinExample</code> has 6 columns; the first three are
+for the factor A, level 1, and the last three are for factor A, level 2.
+Within each triplet of column, the factor B goes from 1 to 3.</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" tabindex="-1"></a>w3 <span class="ot">&lt;-</span> <span class="fu">anopa</span>( <span class="fu">cbind</span>(r11,r12,r12,r21,r22,r23) <span class="sc">~</span> . , </span>
+<span id="cb24-2"><a href="#cb24-2" tabindex="-1"></a>             twoWayWithinExample, </span>
+<span id="cb24-3"><a href="#cb24-3" tabindex="-1"></a>             <span class="at">WSFactors =</span> <span class="fu">c</span>(<span class="st">&quot;A(3)&quot;</span>,<span class="st">&quot;B(2)&quot;</span>) </span>
+<span id="cb24-4"><a href="#cb24-4" tabindex="-1"></a>            )</span></code></pre></div>
+<pre><code>## ANOPA::fyi: Here is how the within-subject variables are understood:</code></pre>
+<pre><code>##  A B Variable
+##  1 1      r11
+##  2 1      r12
+##  3 1      r12
+##  1 2      r21
+##  2 2      r22
+##  3 2      r23</code></pre>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" tabindex="-1"></a><span class="fu">toCompiled</span>(w3)</span></code></pre></div>
+<pre><code>##   r11 r12 r12.1 r21 r22 r23 Count    uAlpha
+## 1  14   6     6  14  16  14    30 0.1074324</code></pre>
+<p>A “fyi” message is shown which lets you see how the variables are
+interpreted. Such messages can be inhibited by changing the option</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" tabindex="-1"></a><span class="fu">options</span>(<span class="st">&quot;ANOPA.feedback&quot;</span> <span class="ot">=</span> <span class="st">&quot;none&quot;</span>)</span></code></pre></div>
+<p>To know more about analyzing proportions with ANOPA, refer to <span class="citation">Laurencelle &amp; Cousineau (2023)</span> or to <a href="../articles/A-WhatIsANOPA.html">What is an ANOPA?</a>.</p>
+</div>
+</div>
+<div id="references" class="section level1 unnumbered">
+<h1 class="unnumbered">References</h1>
+<div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0" line-spacing="2">
+<div id="ref-lc23" class="csl-entry">
+Laurencelle, L., &amp; Cousineau, D. (2023). Analysis of proportions
+using arcsine transform with any experimental design. <em>Frontiers in
+Psychology</em>, <em>13</em>, 1045436. <a href="https://doi.org/10.3389/fpsyg.2022.1045436">https://doi.org/10.3389/fpsyg.2022.1045436</a>
+</div>
+</div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

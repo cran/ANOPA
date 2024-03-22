@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Is the ArcSine transformation so asinine in the end?</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+<style type="text/css">
+
+div.csl-bib-body { }
+div.csl-entry {
+clear: both;
+margin-bottom: 0em;
+}
+.hanging div.csl-entry {
+margin-left:2em;
+text-indent:-2em;
+}
+div.csl-left-margin {
+min-width:2em;
+float:left;
+}
+div.csl-right-inline {
+margin-left:2em;
+padding-left:1em;
+}
+div.csl-indent {
+margin-left: 2em;
+}
+</style>
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Is the ArcSine transformation so asinine in
+the end?</h1>
+
+
+
+<p>Some authors documented that analyses of proportions can be performed
+with as few as 3 participants per group <span class="citation">(e.g.,
+Warton &amp; Hui, 2011)</span>. Some also reported finiding multiple
+configurations with significant results using logistic regressions.</p>
+<p>We do not think this is sensible.</p>
+<p>Let’s generate compiled data with two groups. In the
+<code>warton</code> scenario, the first group has only successes and in
+the second group, 2 out of 3 participants have failure.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>warton <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>  <span class="at">grp =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>),</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>  <span class="at">s   =</span> <span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">1</span>),</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>  <span class="at">n   =</span> <span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">3</span>)  </span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>)</span></code></pre></div>
+<p>Analyzing this, the ANOPA suggests no difference…</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>w <span class="ot">&lt;-</span> <span class="fu">anopa</span>( {s;n}<span class="sc">~</span>grp, warton)</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="fu">summary</span>( w )</span></code></pre></div>
+<pre><code>##             MS  df        F        p correction    Fcorr pvalcorr
+## grp   0.179169   1 2.508371 0.113243   1.166667 2.150032 0.142567
+## Error 0.071429 Inf</code></pre>
+<p>… something quite evident from the plot:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">anopaPlot</span>(w)</span></code></pre></div>
+<div class="float">
+<img role="img" aria-label="Figure 1. The proportions for two groups. Error bars show difference-adjusted 95% confidence intervals." src="data:image/png;base64,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" alt="Figure 1. The proportions for two groups. Error bars show difference-adjusted 95% confidence intervals." />
+<div class="figcaption"><strong>Figure 1</strong>. The proportions for
+two groups. Error bars show difference-adjusted 95% confidence
+intervals.</div>
+</div>
+<p>(one tip of the confidence intervals is so off the scale that it is
+missing.)</p>
+<p>Because the sample is so small, it is actually possible to enumerate
+all the possible results (there are 64 of them). If we allow no success
+or a single success in one group, and all success in the other group,
+there are 14 cases. 14 out of 64 is far from being exceptional, and
+thus, there is no significant result here, congruent with the result of
+the ANOPA analysis (and contradicting the results from a logistic
+regression).</p>
+<p>Lets consider a more extreme result: The first group has only
+successes and the second, only failures (there is two such cases out of
+64):</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>laurencelle <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>  <span class="at">grp =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>),</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>  <span class="at">s   =</span> <span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">0</span>),</span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>  <span class="at">n   =</span> <span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">3</span>)  </span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>)</span></code></pre></div>
+<p>The analyse using ANOPA says:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>l <span class="ot">&lt;-</span> <span class="fu">anopa</span>( {s;n}<span class="sc">~</span>grp, laurencelle)</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="fu">summary</span>(l)</span></code></pre></div>
+<pre><code>##             MS  df        F        p correction    Fcorr pvalcorr
+## grp   0.429938   1 6.019135 0.014152   1.166667 5.159259 0.023123
+## Error 0.071429 Inf</code></pre>
+<p>that is, a significant result (and note that 2 out of 64 is indeed
+rare at the .05 threshold with a p of .031 = 2/64). The plot is
+congruent with this result:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="fu">anopaPlot</span>(l)</span></code></pre></div>
+<div class="float">
+<img role="img" aria-label="Figure 2. The proportions for two extremely different groups. Error bars show difference-adjusted 95% confidence intervals." src="data:image/png;base64,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" alt="Figure 2. The proportions for two extremely different groups. Error bars show difference-adjusted 95% confidence intervals." />
+<div class="figcaption"><strong>Figure 2</strong>. The proportions for
+two extremely different groups. Error bars show difference-adjusted 95%
+confidence intervals.</div>
+</div>
+<p>The logistic regression, when applied to proportions, has very
+inflated type-I error rates so that this technique should be avoided.
+The reason is quite simple: the logit transformation is not
+variance-stabilizing. In fact, it exaggerate the variances across levels
+of population proportions.</p>
+<div id="references" class="section level1 unnumbered">
+<h1 class="unnumbered">References</h1>
+<div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0" line-spacing="2">
+<div id="ref-wh11" class="csl-entry">
+Warton, D. I., &amp; Hui, F. K. (2011). The arcsine is asinine: The
+analysis of proportions in ecology. <em>Ecology</em>, <em>92</em>, 3–10.
+https://doi.org/<a href="https://doi.org/10.1890/10-0340.1   ">10.1890/10-0340.1 </a>
+</div>
+</div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

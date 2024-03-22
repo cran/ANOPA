@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Confidence intervals with proportions</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+<style type="text/css">
+
+div.csl-bib-body { }
+div.csl-entry {
+clear: both;
+margin-bottom: 0em;
+}
+.hanging div.csl-entry {
+margin-left:2em;
+text-indent:-2em;
+}
+div.csl-left-margin {
+min-width:2em;
+float:left;
+}
+div.csl-right-inline {
+margin-left:2em;
+padding-left:1em;
+}
+div.csl-indent {
+margin-left: 2em;
+}
+</style>
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Confidence intervals with proportions</h1>
+
+
+
+<p>Probably the most useful tools for data analysis is a plot with
+suitable error bars <span class="citation">(Cousineau, Goulet, &amp;
+Harding, 2021)</span>. In this vignette, we show how to make confidence
+intervals for proportions.</p>
+<div id="theory-behind-confidence-intervals-for-proportions" class="section level2">
+<h2>Theory behind Confidence intervals for proportions</h2>
+<p>For proportions, ANOPA is based on the Anscombe transform . This
+measure has a known theoretical standard error which depends only on
+sampe size <span class="math inline">\(n\)</span>:</p>
+<p><span class="math display">\[SE_{A}(n) =
+1/\sqrt{4(n+1/2)}.\]</span></p>
+<p>Consequently, when the groups’ sizes are similar, homogeneity of
+variances holds.</p>
+<p>From this, we can decomposed the total test statistic <span class="math inline">\(F\)</span> into a component for each cell of the
+design. We thus get</p>
+<p><span class="math display">\[\left[
+A + z_{0.5-\gamma/2} \times SE_{A}(n), \; A + z_{0.5+\gamma/2} \times
+SE_{A}(n)
+\right]\]</span></p>
+<p>in which <span class="math inline">\(SE_{A}(n)\)</span> is the
+theoretical standard error based only on <span class="math inline">\(n\)</span>, and <span class="math inline">\(\gamma\)</span> is the desired confidence level
+(often .95).</p>
+<p>This technique returns <em>stand-alone</em> confidence intervals,
+that is, intervals which can be used to compare the proportion to a
+fixed point. However, such <em>stand-alone</em> intervals cannot be used
+to compare one proportion to another proportion <span class="citation">(Cousineau et al., 2021)</span>. To compare an observed
+proportion to another observed proportion, it is necessary to adjust
+them for pair-wise differences <span class="citation">(Baguley,
+2012)</span>. This is achieved by increasing the wide of the intervals
+by <span class="math inline">\(\sqrt{2}\)</span>.</p>
+<p>Also, in repeated measure designs, the correlation is beneficial to
+improve estimates. As such, the interval wide can be reduced when
+correlation is positive by multiplying its length by <span class="math inline">\(\sqrt{1-\alpha_1}\)</span>, where <span class="math inline">\(\alpha_1\)</span> is a measure of correlation in a
+matrix containing repeated measures (based on the unitary alpha
+measure).</p>
+<p>Finally, the above returns confidence intervals for the
+<em>transformed</em> scores. However, when used in a plot, it is
+typically more convenient to plot proportions (from 0 to 1) rather than
+Anscombe-scores (from 0 to <span class="math inline">\(\pi/2
+\approx\)</span> 1.57). Thus, it is possible to rescale the vertical
+axis using the inverse Anscombe transform and be shown proportions.</p>
+<p>This is it.</p>
+</div>
+<div id="complicated" class="section level2">
+<h2>Complicated?</h2>
+<p>Well, not really:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(ANOPA)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>w <span class="ot">&lt;-</span> <span class="fu">anopa</span>( {success;total} <span class="sc">~</span> Class <span class="sc">*</span> Difficulty, twoWayExample)</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="fu">anopaPlot</span>(w) </span></code></pre></div>
+<div class="float">
+<img role="img" aria-label="Figure 1. The proportions as a function of class and Difficulty. Error bars show difference-adjusted 95% confidence intervals." src="data:image/png;base64,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" alt="Figure 1. The proportions as a function of class and Difficulty. Error bars show difference-adjusted 95% confidence intervals." />
+<div class="figcaption"><strong>Figure 1</strong>. The proportions as a
+function of class and Difficulty. Error bars show difference-adjusted
+95% confidence intervals.</div>
+</div>
+<p>Because the analyses <code>summary(w)</code> suggests that only the
+factor <code>Difficulty</code> has a significant effect, you may select
+only that factors for plotting, with e.g.,</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">anopaPlot</span>(w, <span class="sc">~</span> Difficulty ) </span></code></pre></div>
+<div class="float">
+<img role="img" aria-label="Figure 2. The proportions as a function of Difficulty only. Error bars show difference-adjusted 95% confidence intervals." src="data:image/png;base64,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" alt="Figure 2. The proportions as a function of Difficulty only. Error bars show difference-adjusted 95% confidence intervals." />
+<div class="figcaption"><strong>Figure 2</strong>. The proportions as a
+function of Difficulty only. Error bars show difference-adjusted 95%
+confidence intervals.</div>
+</div>
+<p>As is the case with any <code>ggplot2</code> figure, you can
+customize it at will. For example,</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="fu">anopaPlot</span>(w, <span class="sc">~</span> Difficulty) <span class="sc">+</span> </span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>            <span class="fu">theme_bw</span>() <span class="sc">+</span>  <span class="co"># change theme</span></span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>            <span class="fu">scale_x_discrete</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="st">&quot;Easy&quot;</span>, <span class="st">&quot;Moderate&quot;</span>, <span class="st">&quot;Difficult&quot;</span>)) <span class="co">#change order</span></span></code></pre></div>
+<div class="float">
+<img role="img" aria-label="Figure 3. Same as Figure 2 with some visual improvements." src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAYAAAAEgCAMAAACKBVRjAAAA/1BMVEUAAAAAADoAAGYAOjoAOpAAZrYzMzM6AAA6ADo6AGY6kNtNTU1NTW5NTY5Nbo5NbqtNjshmAABmADpmkJBmtrZmtv9uTU1uTW5uTY5ubo5ubqtujo5ujqtujshuq6tuq8huq+SOTU2OTW6OTY6Obk2Obm6ObquOjm6Ojo6OjsiOyP+QOgCQtpCQ2/+rbk2rbm6rbo6rjk2rjqurq46ryKur5Mir5OSr5P+2ZgC22/+2/9u2///Ijk3Ijm7IyI7I5KvI/8jI/+TI///bkDrb///kq27kq47k5Kvk/8jk///r6+v/tmb/yI7/25D/27b/5Kv//7b//8j//9v//+T////8C1KpAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAL1klEQVR4nO2dj38TNRjGCzIn6yZMZQwVWQURO9hQ0U2pgitVgc7S9f7/v8VL7lfu2utdfr7J9Xk+zHW2ydPm2ySXvEmuF0Gk6lG/gU0XABALAIgFAMQCAGIBALHkAXwMGZE6AOkUgt7pJPbNRssFAIhdAIDYBQCIXQCA2AUAiF0AgNilFYDZ4QX/PR/0b72tplQSAGRqA2Da3+MAFifDaHK7mlJJAJCpBYDR7oukBswfXuSVoR2Anrx0PsySugEgb4JmX76N5t+eRek0xLtmKQBokWunJANgeisDIKJTkeEveq06WwPElCoCgFwyAOT7gDoBQC4ZAIuTI0NXQQCQqzUA9mNsHAAAuWhGwgCQCwCIXQCA2AUAiF0AgNgFAIhdAIDYBQCIXQCA2AUAiF0AgNgFAIhdAIDYBQCIXQCA2AUAiF0AgNgFAIhdAIDYBQCIXQCA2AUAiF00AGgsiNy8JaC1Qg0gdgEAYhcAIHYBAGIXACB2AQBiFwAgdgEAYhcAIHYBAGIXACB2AQBiFwAgdgEAYhcAIHYBAGIXACB2AQBily4ACPpUIgDQ18YDoLYBAGIbACC2AQBiGwAgtrENoDimaXaQniAqplQRAORqBlAc1zofxI/yI7MAIJNlAMVRfcGdmtgNAEWxyx/cWidHi3NDWAPcDKA4rpU3QbuoAVU5qwGsE35wCgBVOesDsr/KKVVkejam1saFi/2roOy4VlYPTBzcamNCrMbIvkfkahzAKsG0b+TgVgAQRDAStjMnvNrJugUTANQ7WbdgAoB6J+sWTKEByPsA6+UDAKtVVADL1QAA6iQUvE0GAFCncslYY9BxABozUEuzZD0r82bdmIxrQqeiVV9NC1/XjtcADdfVJWO8KQKAOtWWjFkGAFCndSVjkEGwAC63+YX69ZdtUqqooWRMMQgVwNXxlkRKFTWXjJGyCxXAh/07EilV1KZkDFSDUAFcHfsAINJnECqA6H2p9SddmKXFIFQAH/Z7QicsLMxiIUn3C7PUizFUAGVVFmYZCspLvlytJLsBoFiWUtQA9wuzlCaLwp0LGrMWaCd5LNxHm/ZuqvL1INgaMGat/4f9hICwNPHuWTTdo7yhsySDUAGk44D0WqjoA7y4p7xM0m4AKBZm0deANHHb1KECKDdB5YVZ+dpc0rWhLRkEC6DUCTelVJGBkmnDIFwAMilVZKZkGnMBgDqZKpmGahAkgLgHLk9FNKVUkcGSWccgSADSKVVk/KwIFza1snwZWptSY/xtfI5g9UxFqFMRLQHIkS7JxldzRZ5h1oBxvnp5fWDSNwArmqIwAfgSklTMuFf6y5JNWd0NSSrm7WThryDUgOXs07XvbraiWZgLuvGmfUoV2S8Wvv8jVACVgVgehpn0mYaVlCpys0XSFQFnp6UwTYM5LaUzAEo75Yt4DADksjwdXTqkJq0KQZyWkgFwYKWh5oCMGIgUKoD3NaDYjGnbyPJckFgDih4gAAD5OMC2m7OgfBSNjpZTqsj1cTV2/SzHhIugfLQ4PVtOqSL35wXZNLQdEy6C8mIXEBgAm5YbH5BpaWPNFADa2mi59uTVJts1TVDDjFyAALR8XQIoL8yqS6kx+qA7ttKCs16W3QlJtrUxbq33YTYPgHFz8wCi99eetWiCWuRuqd1sKzfLVWzUgLw41lSCgAGYbYcs1ACplEpyc38pN4vmAKBWa4vGGAIbAFZMRTAtTgztD/ABgLF2yAKAymRcHpIcDQ2FJP0A4GqV/FrJTEcXe4TFlEryA4AZBLYBiDdw+DFtgnRDko7UZoyqPzI2PxKuC0nODoYcRxmdknypAW1fZC8DmaC8uXvI+ARAG4Hty1ChD3jcTQDa89Q6qZsX5wohyVEXmyDJV5pN22pxrhCSHBg6L8g7ADrFaGMcYHtxrocA1Nshe5Nx9qajvQSgWpKYC6qVm/NtyABoj2CsS2GI5PxYqBUAzpsanzI6JXlaA5TSmK4B53EPPG5BoKMA5FMZBsAHAW226XUWgPTVk1kAfBBwddxwVk3UaQByXSIA1EqjaCSSWgdQRMTYLj0jR5b5D0BmIskygHJEbDmlkgIA0LodMg6gsialmA0tbQ/YAAAt09seiAkn5w6ybcIdiojp52AhIlaSEBG7eybUgg2oATwPyy4yNYAr7wc2BEBzJu4iYlwbB6B5eZFlAEVEjDVGi+ebchlaysieS4vZ0CIiNjF1cm5oANbmhHhArUyutV6z0hoA6mR4sbsVFwDQzg4RsVpZOJ7UuAtqgGSWpl0AQDtPAHC8E21p/z0AuN4KWE7uaCCWiAUHKimV5KYJsmZTKnP7UxHCqYmTPgBwiUcROZyMm917BACp8hJzOB29OP31JKSAjF1l1//uAjLR5Ah9gKjsTECdKiBTA+JHAFCW/gnVMn1Acnb0USWlkroCINK+rpUJyES4DF2S9shCKiADAEtyAaAhpZIAIBMAaMp+H9CUUkkAkAkAtGV7HFCb0sRosgtCRIzYBvEAYhsAILYBAGIbACC2cRiSnPbDOi2lGwCKkCRfn5vf0g0AUrndH1A8AoBUbnfIJDUAIUlBDkOS0ewgqP0BXawBQR3a1w0AAe8R6waA8h4x1IAlYY8YsQ1GwsQ2AEBsAwDENgBAbAMAxDbYJUksxISJbdAEEdsAALENABDbAACxDQAQ2zgMys8O+timuiR3QXk2Fc1OTiynVBIAZJIJyEwZBgRkqqIISSIoL8hlUJ6HxyrolIQakEmuBswHefkDQCaHQXl2N8+llEoCgEwyQflS+QNAJndB+WSnPK6CKsJImNgGAIhtAIDYBgCIbQCA2AYAiG0AgNgGy1KIhWUpxDZogohtAMCNjaUTqgGgrQDAWxstFwAgdgEAYhcAIHaRvIGDsGEYAIy4yN3AYYrjaky7SAXlR7svUAMMu0guzEpJYGGWMUkuzEIfYNpFrQaIKZUEAJkkT0sRAUBG1AigdAMHAYCWtKqPbzZGXFrewAEAbLlozWnLCwCqcgwAqgoAiAUAxAIAYgEAsawDYHuMxTP/jGbNt2/uiVfIwg3PhBfqX0QnH2PI81qc9B+c9L+qZBo/oeJjH4ChEcSqrO9+/Taaf3foBADLYj4Ypo9X5Og9gHS7fXIU/mjI55p0s/7+LJo9iQ3iMeMeL6D+p4+G6V+ze4/2Lrgp/zt9id7HiN/z7PD1gNfpF4nv7hl7ipf+axULZwD4dvvDCzbDNLkdTY/YP+2s/xxGf7OCGB3xyVv2K4Y84nMobGdbajpLXlIcwa/6MeL8kuySf6y6TW/9kwHwtAbwxjOJbcaln86vzh+//UO7W5gdvrq/eP4qoRpnzH7FZcIs4oc5ef4w/Z8aXvyWmqclAMU0jc8A8jc14o1PDCTukRenvzzWbYHirP/66d8f0g+elA07UmE+4L1+YsxNGYCB3qXAyhqQtKKBAGAdWPqYtRaTJ9otEMvuj5+PZks1IPmiz3gbPUzLRufbn+XG33mwNYC/zbtnrPDZT3H6ilbW0+SbvtQHJCWVmQov0foYBc+iD4j73rh1m+z5C+Ag3WU86fNLlKQhihbP9a9Oi69deokTX6CnV0G7Z0mRJaaLE34VpDMYEccBJd8409jkm4cJEA+vgmo0u09k7JuIAEysDI1DFOaCiAUAxAIAYgEAscIFcHXMtwNtxQ8vP3kWjXvXnsU/T+OHFbFn//uN4B22UsgAdvh/b7xhf33Yv8N/VigGcLmMxReFDiArdVbENcUMAHaUAojGW3ERP93u9T6Kf7ZYUbPGaSthkpQ+e3bnfCt5sWcKH8D7G2/S73j6c3W8xetFAYA/+/76yzjNykaKUh0AcP1lGUDW3lQAcCY3X1K+5VXqAIBqDWBfdaYKANb8+NcCdQDA+VbUDsDlzd/9a4HCB5C29s1NUJzgc/9aoOAB8HHAciecdMQ78e9r7KnkWnXc868FChoAHwkzCmUA2WVodBlffX7xGX/qnF+XbvvXAgUMQF4eXgNtFoDxDvU7WKHNAXC5ncwaeabNAeCpAIBYAEAsACAWABALAIgFAMT6HzhOByy6CDvHAAAAAElFTkSuQmCC" alt="Figure 3. Same as Figure 2 with some visual improvements." />
+<div class="figcaption"><strong>Figure 3</strong>. Same as Figure 2 with
+some visual improvements.</div>
+</div>
+<p>As you can see from this plot, Difficulty is very significant, and
+the most different conditions are Easy vs. Difficult.</p>
+<p>Here you go.</p>
+</div>
+<div id="references" class="section level1 unnumbered">
+<h1 class="unnumbered">References</h1>
+<div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0" line-spacing="2">
+<div id="ref-b12" class="csl-entry">
+Baguley, T. (2012). Calculating and graphing within-subject confidence
+intervals for ANOVA. <em>Behavior Research Methods</em>, <em>44</em>,
+158–175. <a href="https://doi.org/10.3758/s13428-011-0123-7">https://doi.org/10.3758/s13428-011-0123-7</a>
+</div>
+<div id="ref-cgh21" class="csl-entry">
+Cousineau, D., Goulet, M.-A., &amp; Harding, B. (2021). Summary plots
+with adjusted error bars: The superb framework with an implementation in
+<span>R</span>. <em>Advances in Methods and Practices in Psychological
+Science</em>, <em>4</em>, 1–18. <a href="https://doi.org/10.1177/25152459211035109">https://doi.org/10.1177/25152459211035109</a>
+</div>
+</div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
